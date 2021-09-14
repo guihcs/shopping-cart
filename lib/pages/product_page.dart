@@ -1,8 +1,9 @@
-
-
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_project/bloc/cart_bloc.dart';
+import 'package:my_project/models/product_model.dart';
+import 'package:my_project/services/product_service.dart';
+import 'package:my_project/widgets/product_tile.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -12,45 +13,46 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-
-  String? _nameInput;
-  String? _param;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _param = ModalRoute.of(context)!.settings.arguments as String?;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Name Page'),
-      ),
-      body: Column(
-        children: [
-          ListTile(title: Text('Insert your name:'),),
-          ListTile(title: Text(_param!),),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Name'
-              ),
-              onChanged: (text) {
-                _nameInput = text;
-              },
-            ),
-          ),
-          ElevatedButton(onPressed: (){
-            Navigator.of(context).pop(_nameInput);
-          }, child: Text('Confirm'))
-        ],
+      appBar: _appBar(),
+      body: _body(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('cart');
+        },
+        child: Icon(Icons.shopping_cart_outlined),
       ),
     );
   }
+
+  _appBar() {
+    return AppBar(
+      title: Text('Product Page'),
+    );
+  }
+
+  _body() {
+    return FutureBuilder<List<Product>>(
+      future: ProductService.getProducts(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+
+        return Column(
+          children: [
+            ...snapshot.data!.map((product) {
+              return ProductTile(
+                  product: product,
+                onTap: (){
+                  BlocProvider.of<CartBloc>(context).addProduct(product);
+                },
+              );
+            })
+          ],
+        );
+      },
+    );
+  }
+
 }
-
-
-

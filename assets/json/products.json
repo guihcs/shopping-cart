@@ -1,0 +1,21 @@
+
+[
+  {
+    "name": "Milk",
+    "description": "Tasty milk 200ml",
+    "price": 5.00,
+    "imageName": "milk.jpg"
+  },
+  {
+    "name": "Cookie",
+    "description": "Chocolate cookie",
+    "price": 12.00,
+    "imageName": "cookie.jpg"
+  },
+  {
+    "name": "Orange",
+    "description": "Fresh orange",
+    "price": 27.52743,
+    "imageName": "orange.jpg"
+  }
+]
